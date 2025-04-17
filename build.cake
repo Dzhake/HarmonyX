@@ -1,8 +1,6 @@
 #addin nuget:?package=Cake.FileHelpers&version=7.0.0
 
 var target = Argument("target", "Build");
-var nugetKey = Argument("nugetKey", "");
-var useTmpLocalNuget = Argument("useTmpLocalNuget", false);
 
 string RunGit(string command, string separator = "") 
 {
@@ -68,16 +66,6 @@ Task("Publish")
     Information($"Pushing tag v{version}");
     RunGit($"tag v{version}");
     RunGit($"push origin v{version}");
-
-    if(string.IsNullOrWhiteSpace(nugetKey)){
-        Information("No NuGet key specified, can't publish");
-        return;
-    }
-
-    NuGetPush($"./Harmony/bin/Release/HarmonyX.{version}.nupkg", new NuGetPushSettings {
-        Source = "https://api.nuget.org/v3/index.json",
-        ApiKey = nugetKey
-    });
 });
 
 RunTarget(target);
